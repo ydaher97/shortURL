@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Send } from 'lucide-react';
 
 export default function Home() {
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState(() => localStorage.getItem('lastUrl') || '');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,8 +17,13 @@ export default function Home() {
     
     // Convert the number to Base62
     const shortUrl = toBase62(numValue);
+
+    const urlObj = {
+      url: value,
+      shortUrl: shortUrl
+    }
   
-    console.log({ shortUrl });
+    localStorage.setItem(shortUrl, JSON.stringify(urlObj));
     setValue(shortUrl);
   };
   
@@ -76,7 +81,11 @@ export default function Home() {
             </Button>
           </div>
         </form>
-        <p>{value}</p>
+        <p>
+        <a href={localStorage.getItem(value) ? JSON.parse(localStorage.getItem(value) as string).url : '#'} target="_blank" rel="noopener noreferrer">
+          {value}
+        </a>
+        </p>
       </div>
     </main>
   );
